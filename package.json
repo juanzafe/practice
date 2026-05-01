@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "save": "git add src/training/progress.json && git diff --cached --quiet || git commit -m \"training: practice session\" && git push"
   },
   "dependencies": {
     "h8k-components": "^2.2.0",
