@@ -1,13 +1,17 @@
-/**
- * @template T, U
- * @param {(previousValue: U, currentValue: T, currentIndex: number, array: T[]) => U} callbackFn
- * @param {U} [initialValue]
- * @return {U}
- */
-Array.prototype.myReduce = function (callbackFn, initialValue) {
+declare global {
+  interface Array<T> {
+    myReduce<U>(callbackFn: (previousValue: U, currentValue: T, currentIndex: number, array: T[]) => U, initialValue?: U): U;
+  }
+}
+
+Array.prototype.myReduce = function <T, U>(callbackFn: (previousValue: U, currentValue: T, currentIndex: number, array: T[]) => U, initialValue?: U): U {
 
 let acumulador;
 let startIndex;
+
+if (this.length === 0 && arguments.length < 2) {
+  throw new TypeError('no initial value provided and array is empty')
+}
 
 if (arguments.length >= 2) {
   acumulador = initialValue;
@@ -18,7 +22,8 @@ if (arguments.length >= 2) {
 }
 
 for (let i = startIndex; i < this.length; i++) {
-  acumulador = callbackFn(acumulador, this[i], i, this)
+        if (!(i in this)) continue;
+    acumulador = callbackFn(acumulador, this[i], i, this)
 }
   return acumulador
 };
