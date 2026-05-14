@@ -33,4 +33,5 @@ class Moto extends Car{
 }
 
 let moto= new Moto("Honda", "sport");
-moto.wheelie()
+moto.gas(300);
+moto.wheelie();

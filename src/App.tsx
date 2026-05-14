@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import ItemList from "./problems/item-list/ItemList";
 import TrainingPage from "./training/pages/TrainingPage";
+import AsyncAwaitPage from "./problems/async-await/AsyncAwaitPage";
 
 function Home() {
   return (
@@ -9,6 +10,9 @@ function Home() {
       <ul>
         <li>
           <Link to="/training">🏋️ Frontend Interview Training</Link>
+        </li>
+        <li>
+          <Link to="/async-await">⚡ Async / Await</Link>
         </li>
         <li>
           <Link to="/item-list">Item List</Link>
@@ -24,6 +28,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/training" element={<TrainingPage />} />
+        <Route path="/async-await" element={<AsyncAwaitPage />} />
         <Route path="/item-list" element={<ItemList />} />
       </Routes>
     </BrowserRouter>
