@@ -1,38 +1,49 @@
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
-import ItemList from "./problems/item-list/ItemList";
-import TrainingPage from "./training/pages/TrainingPage";
-import AsyncAwaitPage from "./problems/async-await/AsyncAwaitPage";
+import { people } from './data.js';
+import { getImageUrl } from './utils.js';
 
-function Home() {
+export default function App() {
+  const chemists = people.filter(person =>
+  person.profession === 'chemist'
+);
+  const others = people.filter(person=>
+    person.profession !== 'chemist'
+);
+  const listItems1 = chemists.map(person =>
+    <li key={person.id}>
+      <img
+        src={getImageUrl(person)}
+        alt={person.name}
+      />
+      <p>
+        <b>{person.name}:</b>
+        {' ' + person.profession + ' '}
+        known for {person.accomplishment}
+      </p>
+    </li>
+    );
+  const listItems2 = others.map(person =>
+    <li key={person.id}>
+      <img
+        src={getImageUrl(person)}
+        alt={person.name}
+      />
+      <p>
+        <b>{person.name}:</b>
+        {' ' + person.profession + ' '}
+        known for {person.accomplishment}
+      </p>
+    </li>
+  );
   return (
-    <div style={{ maxWidth: 600, margin: "3rem auto", padding: "0 1rem" }}>
-      <h1>Practice</h1>
-      <ul>
-        <li>
-          <Link to="/training">🏋️ Frontend Interview Training</Link>
-        </li>
-        <li>
-          <Link to="/async-await">⚡ Async / Await</Link>
-        </li>
-        <li>
-          <Link to="/item-list">Item List</Link>
-        </li>
-      </ul>
-    </div>
+    <article>
+      <section>
+        <h1>Chemists</h1>
+        <ul>{listItems1}</ul>
+      </section>
+      <section>
+        <h1>Others</h1>
+        <ul>{listItems2}</ul>
+      </section>
+    </article>
   );
 }
-
-function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/training" element={<TrainingPage />} />
-        <Route path="/async-await" element={<AsyncAwaitPage />} />
-        <Route path="/item-list" element={<ItemList />} />
-      </Routes>
-    </BrowserRouter>
-  );
-}
-
-export default App;
