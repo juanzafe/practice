@@ -1,49 +1,56 @@
-import { people } from './data.js';
-import { getImageUrl } from './utils.js';
+import { useState } from 'react';
+import {sculptureList} from './data'
 
-export default function App() {
-  const chemists = people.filter(person =>
-  person.profession === 'chemist'
-);
-  const others = people.filter(person=>
-    person.profession !== 'chemist'
-);
-  const listItems1 = chemists.map(person =>
-    <li key={person.id}>
-      <img
-        src={getImageUrl(person)}
-        alt={person.name}
-      />
-      <p>
-        <b>{person.name}:</b>
-        {' ' + person.profession + ' '}
-        known for {person.accomplishment}
-      </p>
-    </li>
-    );
-  const listItems2 = others.map(person =>
-    <li key={person.id}>
-      <img
-        src={getImageUrl(person)}
-        alt={person.name}
-      />
-      <p>
-        <b>{person.name}:</b>
-        {' ' + person.profession + ' '}
-        known for {person.accomplishment}
-      </p>
-    </li>
-  );
+export default function Gallery() {
+  const [index, setIndex] = useState(0);
+  const [showMore, setShowMore] = useState(false);
+
+
+  const hasPrev = index > 0;
+  const hasNext = index < sculptureList.length - 1;
+  
+  function handleNextClick() {
+    if (hasNext){
+      setIndex(index + 1);
+    }
+  }
+  function handlePrevClick() {
+    if (hasPrev)
+    setIndex(index - 1);
+  }
+
+  function handleMoreClick() {
+    setShowMore(!showMore);
+  }
+
+
+  const sculpture = sculptureList[index];
   return (
-    <article>
-      <section>
-        <h1>Chemists</h1>
-        <ul>{listItems1}</ul>
-      </section>
-      <section>
-        <h1>Others</h1>
-        <ul>{listItems2}</ul>
-      </section>
-    </article>
+    <>
+      <button onClick={handleNextClick}
+      disabled={!hasNext}>
+        Next
+      </button>
+      <button onClick={handlePrevClick}
+      disabled={!hasPrev}>
+
+        Prev
+      </button>
+      <h2>
+        <i>{sculpture.name} </i>
+        by {sculpture.artist}
+      </h2>
+      <h3>
+        ({index + 1} of {sculptureList.length})
+      </h3>
+      <button onClick={handleMoreClick}>
+        {showMore ? 'Hide' : 'Show'} details
+      </button>
+      {showMore && <p>{sculpture.description}</p>}
+      <img
+        src={sculpture.url}
+        alt={sculpture.alt}
+      />
+    </>
   );
 }
