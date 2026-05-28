@@ -55,7 +55,7 @@ export const sculptureList = [{
 }, {
   name: 'Lunar Landscape',
   artist: 'Louise Nevelson',
-  description: 'Nevelson was known for scavenging objects from New York City debris, which she would later assemble into monumental constructions. In this one, she used disparate parts like a bedpost, juggling pin, and seat fragment, nailing and gluing them into boxes that reflect the influence of Cubism's geometric abstraction of space and form.',
+  description: 'Nevelson was known for scavenging objects from New York City debris, which she would later assemble into monumental constructions. In this one, she used disparate parts like a bedpost, juggling pin, and seat fragment, nailing and gluing them into boxes that reflect the influence of Cubisms geometric abstraction of space and form.',
   url: 'https://react.dev/images/docs/scientists/rN7hY6om.jpg',
   alt: 'A black matte sculpture where the individual elements are initially indistinguishable.'
 }, {
