@@ -1,4 +1,5 @@
 import { useState } from "react";
+import {BuscaPeli} from "./problems/pelis.jsx"
 
 type Task = { id: number; text: string; done: boolean };
 
@@ -32,7 +33,9 @@ function ToDoList(){
   
 
   return (
+    
     <div>
+     
       <input 
         value={inputValue}
         onChange={(e)=> setInputValue(e.target.value)}/>
@@ -61,7 +64,7 @@ function ToDoList(){
 export default function App() {
     return (
         <div>
-            <ToDoList />
+            <BuscaPeli />
         </div>
     )
 }
