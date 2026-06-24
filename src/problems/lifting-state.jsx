@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 /**
  * EJERCICIO 2: Lifting State - Conversor de temperatura
  * 
@@ -21,13 +23,35 @@
  */
 
 function CelsiusInput({ value, onChange }) {
-  // Tu código aquí
+  return(
+    <input 
+    value={value}
+    onChange={(e)=>onChange(Number(e.target.value))}
+    placeholder="Celsius"
+    />
+  )
 }
 
 function FahrenheitInput({ value, onChange }) {
-  // Tu código aquí
+  return(
+    <input
+    value={value}
+    onChange={(e)=>onChange(Number(e.target.value))}
+    placeholder="Fahrenheit"
+    />
+  )
 }
 
 export default function TemperatureConverter() {
-  // Tu código aquí
+  const [celsius, setCelsius] = useState(0);
+  
+  return(
+    <div>
+      <CelsiusInput value={celsius} onChange={setCelsius} /> 
+      
+      <FahrenheitInput value={(celsius * 9/5) + 32} onChange={(e)=>setCelsius((e-32) * 5/9)} />
+      
+      {celsius >= 100 && <p>El agua hierve</p>}
+    </div>
+  )
 }
