@@ -19,11 +19,27 @@
  * - Un custom hook es simplemente una función que empieza por "use"
  * - Dentro puedes usar useState y cualquier otro hook
  */
+import { useState } from 'react';
 
 function useToggle(initialValue = false) {
-  // Tu código aquí
+  const [value, setValue] = useState(initialValue);
+
+  const toggle = () => setValue(!value);
+  const setTrue = () => setValue(true);
+  const setFalse = () => setValue(false);
+  
+  return [value, toggle, setTrue, setFalse]
 }
 
 export default function ToggleDemo() {
-  // Tu código aquí - usa el hook useToggle
+    const [value, toggle, setTrue, setFalse] = useToggle();
+  
+  return(
+    <div>
+      <p>{value ? 'Activo ✅' : 'Inactivo ❌'}</p>
+      <button onClick={toggle}>Toggle</button>
+      <button onClick={setTrue}>Activar</button>
+      <button onClick={setFalse}>Desactivar</button>
+    </div>
+  )
 }

@@ -27,73 +27,15 @@ function esperar(ms: number): Promise<void> {
 }
 
 // ── Soluciones de los ejercicios ─────────────────────────────
-async function ej1_obtenerPost(id: number): Promise<Post> {
-  const res = await fetch(`${BASE}/posts/${id}`);
-  return res.json();
-}
-
-async function ej2_obtenerPostSeguro(id: number): Promise<Post | null> {
-  try {
-    const res = await fetch(`${BASE}/posts/${id}`);
-    if (!res.ok) return null;
-    return res.json();
-  } catch {
-    return null;
-  }
-}
-
-async function ej3_obtenerNombreAutor(postId: number): Promise<string> {
-  const resPost = await fetch(`${BASE}/posts/${postId}`);
-  const post: Post = await resPost.json();
-  const resUser = await fetch(`${BASE}/users/${post.userId}`);
-  const user: User = await resUser.json();
-  return user.name;
-}
-
-async function ej4_postYComentarios(
-  postId: number
-): Promise<{ post: Post; comments: Comment[] }> {
-  const [postRes, commentsRes] = await Promise.all([
-    fetch(`${BASE}/posts/${postId}`),
-    fetch(`${BASE}/posts/${postId}/comments`),
-  ]);
-  const [post, comments] = await Promise.all([
-    postRes.json() as Promise<Post>,
-    commentsRes.json() as Promise<Comment[]>,
-  ]);
-  return { post, comments };
-}
-
-async function ej5_reintentos(): Promise<string> {
-  let intentos = 0;
-  const fnInestable = (): Promise<string> => {
-    intentos++;
-    if (intentos < 3) return Promise.reject(new Error(`Fallo #${intentos}`));
-    return Promise.resolve(`¡Éxito en el intento ${intentos}!`);
-  };
-
-  let ultimoError: unknown;
-  for (let i = 0; i < 5; i++) {
-    try {
-      return await fnInestable();
-    } catch (err) {
-      ultimoError = err;
-      await esperar(300);
-    }
-  }
-  throw ultimoError;
-}
-
-async function ej6_lotes(tamañoLote: number): Promise<Post[]> {
-  const ids = [1, 2, 3, 4, 5, 6];
-  const resultado: Post[] = [];
-  for (let i = 0; i < ids.length; i += tamañoLote) {
-    const lote = ids.slice(i, i + tamañoLote);
-    const posts = await Promise.all(lote.map((id) => ej1_obtenerPost(id)));
-    resultado.push(...posts);
-  }
-  return resultado;
-}
+import {
+  obtenerPost,
+  obtenerPostSeguro,
+  obtenerNombreAutor,
+  obtenerPostYComentarios,
+  fetchConReintentos,
+  obtenerPostsEnLotes,
+  CacheAPI,
+} from "./exercises";
 
 // ── Componente ───────────────────────────────────────────────
 interface EjercicioState {
@@ -143,7 +85,7 @@ export default function AsyncAwaitPage() {
   const res = await fetch(\`\${BASE}/posts/\${id}\`);
   return res.json();
 }`,
-      fn: () => ej1_obtenerPost(1),
+      fn: () => obtenerPost(1),
     },
     {
       n: 2,
@@ -158,7 +100,7 @@ export default function AsyncAwaitPage() {
     return null;
   }
 }`,
-      fn: () => ej2_obtenerPostSeguro(99999),
+      fn: () => obtenerPostSeguro(99999),
     },
     {
       n: 3,
@@ -171,7 +113,7 @@ export default function AsyncAwaitPage() {
   const user = await resUser.json();
   return user.name;
 }`,
-      fn: () => ej3_obtenerNombreAutor(1),
+      fn: () => obtenerNombreAutor(1),
     },
     {
       n: 4,
@@ -187,7 +129,7 @@ export default function AsyncAwaitPage() {
   ]);
   return { post, comments };
 }`,
-      fn: () => ej4_postYComentarios(1),
+      fn: () => obtenerPostYComentarios(1),
     },
     {
       n: 5,
@@ -205,7 +147,15 @@ export default function AsyncAwaitPage() {
   }
   throw ultimoError;
 }`,
-      fn: () => ej5_reintentos(),
+      fn: () => {
+        let intentos = 0;
+        const fnInestable = () => {
+          intentos++;
+          if (intentos < 3) return Promise.reject(new Error(`Fallo #${intentos}`));
+          return Promise.resolve(`¡Éxito en el intento ${intentos}!`);
+        };
+        return fetchConReintentos(fnInestable, 5);
+      },
     },
     {
       n: 6,
@@ -220,7 +170,7 @@ export default function AsyncAwaitPage() {
   }
   return resultado;
 }`,
-      fn: () => ej6_lotes(2),
+      fn: () => obtenerPostsEnLotes([1, 2, 3, 4, 5, 6], 2),
     },
   ];
 

@@ -49,8 +49,8 @@ const BASE = "https://jsonplaceholder.typicode.com";
 //  Tipo de retorno esperado: Promise<Post>
 
 async function obtenerPost(id: number): Promise<Post> {
-  // TU CÓDIGO AQUÍ
-  throw new Error("No implementado");
+  const res = await fetch(`${BASE}/posts/${id}`)
+  return res.json()
 }
 
 // =============================================================
@@ -66,8 +66,16 @@ async function obtenerPost(id: number): Promise<Post> {
 //  Pista: usa try/catch y comprueba `res.ok`
 
 async function obtenerPostSeguro(id: number): Promise<Post | null> {
-  // TU CÓDIGO AQUÍ
-  throw new Error("No implementado");
+
+try {
+  const res = await fetch(`${BASE}/posts/${id}`)
+
+  if (!res.ok) return null
+  return res.json()
+}
+catch {
+  return null
+}
 }
 
 // =============================================================
@@ -83,10 +91,12 @@ async function obtenerPostSeguro(id: number): Promise<Post | null> {
 //  Tipo de retorno esperado: Promise<string>
 
 async function obtenerNombreAutor(postId: number): Promise<string> {
-  // TU CÓDIGO AQUÍ
-  throw new Error("No implementado");
+  const resPost = await fetch(`${BASE}/posts/${postId}`);
+  const post = await resPost.json();
+  const resUser = await fetch(`${BASE}/users/${post.userId}`);
+  const user = await resUser.json();
+  return user.name;
 }
-
 // =============================================================
 // EJERCICIO 4 ⭐⭐ (Medio) — Paralelismo con Promise.all
 // =============================================================
@@ -100,11 +110,15 @@ async function obtenerNombreAutor(postId: number): Promise<string> {
 //
 //  ¡No uses await secuencial! El objetivo es hacerlo simultáneo.
 
-async function obtenerPostYComentarios(
-  postId: number
-): Promise<{ post: Post; comments: Comment[] }> {
-  // TU CÓDIGO AQUÍ
-  throw new Error("No implementado");
+async function obtenerPostYComentarios(postId: number) {
+  const [postRes, commentsRes] = await Promise.all([
+    fetch(`${BASE}/posts/${postId}`),
+    fetch(`${BASE}/posts/${postId}/comments`),
+  ]);
+  const [post, comments] = await Promise.all([
+    postRes.json(), commentsRes.json()
+  ]);
+  return { post, comments };
 }
 
 // =============================================================
@@ -123,14 +137,18 @@ function esperar(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-async function fetchConReintentos<T>(
-  fn: () => Promise<T>,
-  intentos: number
-): Promise<T> {
-  // TU CÓDIGO AQUÍ
-  throw new Error("No implementado");
+async function fetchConReintentos<T>(fn: () => Promise<T>, intentos: number) {
+  let ultimoError: unknown;
+  for (let i = 0; i < intentos; i++) {
+    try {
+      return await fn();
+    } catch (err) {
+      ultimoError = err;
+      await esperar(500);
+    }
+  }
+  throw ultimoError;
 }
-
 // =============================================================
 // EJERCICIO 6 ⭐⭐⭐ (Difícil) — Concurrencia limitada
 // =============================================================
